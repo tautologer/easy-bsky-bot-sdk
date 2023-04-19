@@ -1,0 +1,31 @@
+{
+  "name": "easy-bsky-bot-sdk",
+  "version": "0.1.0",
+  "description": "A typescript SDK for easily writing bots for https://bsky.app",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tautologer/easy-bsky-bot-sdk.git"
+  },
+  "keywords": [
+    "bluesky",
+    "bot",
+    "sdk"
+  ],
+  "author": "tautologer.com",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/tautologer/easy-bsky-bot-sdk/issues"
+  },
+  "homepage": "https://github.com/tautologer/easy-bsky-bot-sdk#readme",
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@atproto/api": "^0.2.5"
+  }
+}

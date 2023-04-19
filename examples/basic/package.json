@@ -1,0 +1,18 @@
+{
+  "name": "basic-bsky-bot",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tautologer.com",
+  "license": "SEE LICENSE IN ../../LICENSE",
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3"
+  }
+}
