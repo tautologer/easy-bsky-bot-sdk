@@ -6,3 +6,8 @@ node_modules/
 
 # dotenv environment variables file
 .env
+
+# example build artifacts
+examples/**/*.js
+# example package lock as well
+examples/**/package-lock.json

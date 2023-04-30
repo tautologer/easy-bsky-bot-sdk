@@ -2,7 +2,7 @@
 
 A typescript SDK for easily writing bots for bsky.app
 
-Current supported version: 0.1.0
+Current supported version: 0.1.1
 
 Please use this SDK responsibly.
 You are responsible for your use of this bot.
