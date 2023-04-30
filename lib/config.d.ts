@@ -1,4 +1,4 @@
-export declare const VERSION = "0.1.1";
+export declare const VERSION = "0.1.2";
 export declare const DEFAULT_LIMIT = 50;
 export declare const DEFAULT_POLLING_INTERVAL = 10000;
 export declare const DEFAULT_POST_INTERVAL = 1000;

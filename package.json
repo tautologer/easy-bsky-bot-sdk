@@ -1,6 +1,6 @@
 {
   "name": "easy-bsky-bot-sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A typescript SDK for easily writing bots for https://bsky.app",
   "main": "lib/index.js",
   "scripts": {

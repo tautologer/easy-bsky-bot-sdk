@@ -72,7 +72,7 @@ const getEventType = (notif: Notif): Event["type"] | undefined => {
     case "reply":
       return Events.REPLY;
     default:
-      console.warn(`unrecognized notification reason: ${notif.reason}`);
+      // TODO log something here?
       return undefined;
   }
 };

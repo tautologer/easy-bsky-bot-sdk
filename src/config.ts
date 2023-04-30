@@ -1,4 +1,4 @@
-export const VERSION = "0.1.1";
+export const VERSION = "0.1.2";
 
 // I'm just hardcoding all of this for now, maybe I'll make it configurable later
 
