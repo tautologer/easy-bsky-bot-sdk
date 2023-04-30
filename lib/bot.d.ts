@@ -13,6 +13,7 @@ type BotOptions = {
     useNonBotHandle?: boolean;
 };
 export declare class BskyBot {
+    _pollCount: number;
     private static _ownerHandle?;
     static setOwner({ handle, contact }: {
         handle: string;

@@ -57,6 +57,8 @@ const BOT_DEFAULTS: Required<BotOptions> = {
 const botHandleRegex = /(\.bot\.|-bot)/i;
 
 export class BskyBot {
+  _pollCount: number = 0;
+
   // fetch handler with user-agent
   private static _ownerHandle?: string;
   static setOwner({ handle, contact }: { handle: string; contact?: string }) {
@@ -224,6 +226,11 @@ export class BskyBot {
     this._ensureNotKilled();
     if (this._polling) return;
     this._polling = true;
+    this._pollCount++
+    process.stdout.write(".");
+    if (this._pollCount % 10 === 0) {
+      process.stdout.write(`\n[${this._pollCount}]`);
+    }
     const listNotifications = rateLimit(this.agent.listNotifications, this._queryRateLimiter);
     try {
       const checkedNotificationsAt = new Date();

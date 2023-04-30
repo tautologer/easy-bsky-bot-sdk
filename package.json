@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/tautologer/easy-bsky-bot-sdk#readme",
   "devDependencies": {
+    "@types/node": "^18.16.3",
     "typescript": "^5.0.4"
   },
   "dependencies": {
