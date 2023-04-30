@@ -27,5 +27,10 @@
   },
   "dependencies": {
     "@atproto/api": "^0.2.5"
-  }
+  },
+  "files": [
+    "lib",
+    "LICENSE",
+    "README.md"
+  ]
 }
