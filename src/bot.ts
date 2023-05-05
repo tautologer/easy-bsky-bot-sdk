@@ -47,7 +47,7 @@ const BOT_DEFAULTS: Required<BotOptions> = {
   handle: "", // TODO do some type magic so this doesn't have to be here, since it's a required prop
   service: "https://bsky.social",
   replyToBots: false,
-  replyToNonFollowers: false,
+  replyToNonFollowers: true, // risky?
   maxRepliesInterval: DEFAULT_MAX_REPLIES_INTERVAL,
   maxRepliesPerInterval: DEFAULT_MAX_REPLIES_PER_INTERVAL,
   useNonBotHandle: false,
