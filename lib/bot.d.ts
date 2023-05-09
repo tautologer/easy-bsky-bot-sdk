@@ -2,8 +2,8 @@ import { BskyAgent } from "@atproto/api";
 import { HandlerMap } from "./event";
 import { PostParams } from "./post";
 import { Did, Handle, MakeEmbedParams, Post, PostReference, Uri, User, UserIdentifier } from "./types";
-type PostParam = string | PostParams;
-type BotOptions = {
+declare type PostParam = string | PostParams;
+declare type BotOptions = {
     handle: string;
     service?: string;
     replyToBots?: boolean;

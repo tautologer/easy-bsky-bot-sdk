@@ -9,6 +9,21 @@ import { BskyBot } from "../../lib/bot";
 // load environment variables from .env file
 dotenv.config();
 
+async function testImagePost(bot: BskyBot) {
+  const imagePath = './testdata/test-cat.jpg'
+  const params: MakeEmbedParams = {
+    agent: bot.agent,
+    imageUrl: imagePath
+  }
+  const embed = await bot.makeEmbed(params)
+
+  await bot.post({
+    text: "here's an image",
+    embed,
+  });
+
+}
+
 async function main() {
   const handle = process.env.BOT_HANDLE;
   if (!handle) throw new Error("BOT_HANDLE not set in .env");
@@ -39,18 +54,9 @@ async function main() {
     await bot.like(post);
 
     const { text } = post;
-    const imagePath = './testdata/test.png'
 
     if (text === 'img') {
-      const params: MakeEmbedParams = {
-        agent: bot.agent,
-        imageUrl: imagePath
-      }
-      const embed = await bot.makeEmbed(params)
-      await bot.post({
-        text: "here's an image",
-        embed,
-      });
+      await testImagePost(bot)
     }
 
   });
@@ -61,7 +67,10 @@ async function main() {
     await bot.follow(user.did);
   });
 
+
   bot.startPolling(); // start polling for events
+  await testImagePost(bot)
+
 }
 
 main().catch((err) => {

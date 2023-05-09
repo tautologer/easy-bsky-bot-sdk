@@ -26,12 +26,12 @@ export declare const getUserPosts: ({ agent, identifier, limit, cursor, }: {
     items: Post[];
     cursor?: string | undefined;
 }>;
-export type PostParams = {
+export declare type PostParams = {
     text?: string;
     embed?: ImageEmbed;
 };
 export declare const validatePostParams: (params: PostParams) => void;
-type BasePostParams = PostParams & {
+declare type BasePostParams = PostParams & {
     agent: BskyAgent;
 };
 export declare const post: (params: BasePostParams) => Promise<PostReference>;

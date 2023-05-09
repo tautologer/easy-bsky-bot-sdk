@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { ImageEmbed, MakeEmbedParams } from './types';
 
-function guessEncoding(imageUrl: string) {
+function guessImageFormat(imageUrl: string) {
   const ext = imageUrl.split('.').pop()
   if (ext === 'png') return 'image/png'
   if (ext === 'jpg') return 'image/jpeg'
@@ -10,15 +10,36 @@ function guessEncoding(imageUrl: string) {
   throw new Error(`Unable to guess encoding for ${imageUrl}`)
 }
 
+const verbose = true
+
+const clog = {
+  log: (...args: any[]) => {
+    const msg = args.shift()
+    if (verbose) console.log(msg, JSON.stringify(args, null, 2))
+  }
+}
+
 export const makeEmbed = async (params: MakeEmbedParams) => {
-  let { agent, imageUrl, imageAlt, encoding } = params;
-  encoding = encoding || guessEncoding(imageUrl)
+  let { agent, imageUrl, imageAlt, encoding: imageFormat } = params;
+  imageFormat = imageFormat || guessImageFormat(imageUrl)
   imageAlt = imageAlt || 'image'
 
+  const check = fs.existsSync(imageUrl)
+  if (!check) {
+    const msg = `Unable to find image ${imageUrl}`;
+    console.error(msg);
+    // FIXME dont crash in prod env if an image is missing
+    throw new Error(msg);
+    // return
+  }
+  clog.log('file exists', { imageUrl, imageFormat })
   const data = fs.readFileSync(imageUrl);
+  clog.log('read data', { length: data.length })
+
   const response = await agent.uploadBlob(
-    data, { encoding }
+    data, { encoding: imageFormat }
   );
+  clog.log('uploadBlob response', JSON.stringify(response, null, 2))
 
   if (!response.success) {
     const msg = `Unable to upload image ${imageUrl}`;

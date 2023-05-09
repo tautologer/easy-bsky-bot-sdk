@@ -21,7 +21,7 @@ cls:
 
 dev: cls
   cd ../.. && tsc
-  cd -
+  pwd
   npm run dev
 
 
