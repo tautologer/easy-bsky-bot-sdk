@@ -1,5 +1,10 @@
 import * as dotenv from "dotenv";
-import { BskyBot, Events } from "easy-bsky-bot-sdk";
+import {
+  Events,
+  MakeEmbedParams
+} from '../../lib/types'
+
+import { BskyBot } from "../../lib/bot";
 
 // load environment variables from .env file
 dotenv.config();
@@ -11,8 +16,8 @@ async function main() {
   if (!password) throw new Error("BOT_PASSWORD not set in .env");
 
   BskyBot.setOwner({
-    handle: "example.bsky.social",
-    contact: "example.contact@example.com",
+    handle,
+    contact: `support@${handle}`,
   });
 
   const bot = new BskyBot({
@@ -32,6 +37,22 @@ async function main() {
     const { post } = event;
     console.log(`got reply from ${post.author.handle}: ${post.text}`);
     await bot.like(post);
+
+    const { text } = post;
+    const imagePath = './testdata/test.png'
+
+    if (text === 'img') {
+      const params: MakeEmbedParams = {
+        agent: bot.agent,
+        imageUrl: imagePath
+      }
+      const embed = await bot.makeEmbed(params)
+      await bot.post({
+        text: "here's an image",
+        embed,
+      });
+    }
+
   });
 
   bot.setHandler(Events.FOLLOW, async (event) => {

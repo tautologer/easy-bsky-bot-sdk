@@ -24,8 +24,9 @@ import {
   validatePostParams,
 } from "./post";
 import { rateLimit, RateLimiter } from "./rateLimiter";
-import { Did, Handle, isDid, isHandle, Notif, Post, PostReference, Uri, User, UserIdentifier } from "./types";
+import { Did, Handle, isDid, isHandle, MakeEmbedParams, Notif, Post, PostReference, Uri, User, UserIdentifier } from "./types";
 import { getUser } from "./user";
+import { makeEmbed } from "./embed";
 
 type PostParam = string | PostParams;
 const getPostParams = (param: PostParam): PostParams => {
@@ -411,6 +412,10 @@ export class BskyBot {
       { agent: this.agent, actor: identifier, limit: options.limit },
       this._queryRateLimiter
     );
+  }
+
+  async makeEmbed(params: MakeEmbedParams) {
+    return makeEmbed(params)
   }
 
   // ooh, you know what would be really cool, is if we had "iterate over X" methods, like "iterate over all followers"

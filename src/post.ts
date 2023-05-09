@@ -14,16 +14,18 @@ import {
   PostReference,
   Uri,
   UserIdentifier,
+  ImageEmbed
 } from "./types";
 import { getCallOptions } from "./util";
+
 
 // util
 
 export const extractMentionsFromFacets = (
   facets:
     | {
-        features: Feature[];
-      }[]
+      features: Feature[];
+    }[]
     | undefined
 ): Did[] => {
   if (!facets) return [];
@@ -77,9 +79,9 @@ const mapBskyFeedPostToPost = (bskyFeedPost: AppBskyFeedDefs.PostView): Omit<Pos
 
   const replyDetails = record.reply
     ? {
-        parent: { uri: record.reply.parent.uri, cid: record.reply.parent.cid },
-        root: { uri: record.reply.root.uri, cid: record.reply.root.cid },
-      }
+      parent: { uri: record.reply.parent.uri, cid: record.reply.parent.cid },
+      root: { uri: record.reply.root.uri, cid: record.reply.root.cid },
+    }
     : {};
 
   // note that we have no way of knowing whether or not this is a repost --
@@ -185,6 +187,7 @@ export const getUserPosts = async ({
 
 export type PostParams = {
   text?: string;
+  embed?: ImageEmbed;
   // TODO more options & types: images, external embeds, quotes, etc
 };
 export const validatePostParams = (params: PostParams): void => {
@@ -202,7 +205,7 @@ type InternalPostParams = BasePostParams & {
 };
 
 const _post = async (params: InternalPostParams): Promise<PostReference> => {
-  const { agent } = params;
+  const { agent, embed } = params;
   const _params: Partial<AppBskyFeedPost.Record> = {};
 
   // TODO suport passing in custom facets and entities ?
@@ -229,7 +232,12 @@ const _post = async (params: InternalPostParams): Promise<PostReference> => {
     };
   }
 
-  const { uri, cid } = await agent.post({ text: richText.text, facets: richText.facets, ..._params }); // call options ?
+  const { uri, cid } = await agent.post({
+    text: richText.text,
+    facets: richText.facets,
+    embed,
+    ..._params
+  }); // call options ?
   if (!isUri(uri)) throw new Error(`unexpected uri: ${uri}`);
   if (!isCid(cid)) throw new Error(`unexpected cid: ${cid}`);
   return { uri, cid };

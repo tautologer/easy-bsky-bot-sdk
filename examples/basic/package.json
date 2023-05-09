@@ -4,16 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node index.ts"
   },
   "author": "tautologer.com",
   "license": "SEE LICENSE IN ../../LICENSE",
   "devDependencies": {
     "@types/node": "^18.15.11",
+    "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
-    "easy-bsky-bot-sdk": "^0.1.1"
+    "easy-bsky-bot-sdk": "file:../../easy-bsky-bot-sdk"
   }
 }

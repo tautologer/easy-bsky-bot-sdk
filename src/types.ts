@@ -112,7 +112,7 @@ export type Event = FollowEvent | MentionEvent | ReplyEvent;
 
 // features
 
-export type Feature = { $type: string; [key: string]: any };
+export type Feature = { $type: string;[key: string]: any };
 export type MentionFeature = Feature & {
   $type: "app.bsky.richtext.facet#mention";
   did: string;
@@ -138,3 +138,23 @@ export type Notif = Awaited<ReturnType<BskyAgent["listNotifications"]>>["data"][
 
 export type Assert<T extends true> = T;
 export type Equals<T, U> = [T] extends [U] ? ([U] extends [T] ? true : false) : false;
+
+
+// embed images
+
+export type MakeEmbedParams = {
+  agent: BskyAgent;
+  imageUrl: string;
+  imageAlt?: string
+  encoding?: string;
+}
+
+export type ImageItem = {
+  image: any
+  alt: string
+}
+
+export type ImageEmbed = {
+  $type: "app.bsky.embed.images"
+  images: ImageItem[]
+}
