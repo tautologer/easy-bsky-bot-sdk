@@ -19,9 +19,14 @@ const clog = {
   }
 }
 
+/**
+ * returns an image embed object from a local image file
+ * @param params
+ * @returns
+ */
 export const makeEmbed = async (params: MakeEmbedParams) => {
-  let { agent, imageUrl, imageAlt, encoding: imageFormat } = params;
-  imageFormat = imageFormat || guessImageFormat(imageUrl)
+  let { agent, imageUrl, imageAlt, encoding } = params;
+  encoding = encoding || guessImageFormat(imageUrl)
   imageAlt = imageAlt || 'image'
 
   const check = fs.existsSync(imageUrl)
@@ -32,7 +37,7 @@ export const makeEmbed = async (params: MakeEmbedParams) => {
     throw new Error(msg);
     // return
   }
-  clog.log('file exists', { imageUrl, imageFormat })
+  clog.log('file exists', { imageUrl, encoding })
   const data = fs.readFileSync(imageUrl);
   const buffer = await data.buffer
   // const data = new Uint8Array(buffer);
@@ -43,13 +48,15 @@ export const makeEmbed = async (params: MakeEmbedParams) => {
     length: bytes.length,
     buffer: typeof buffer,
     data: typeof data,
-    byes: typeof bytes,
+    bytes: typeof bytes,
   })
 
   const response = await agent.uploadBlob(
-    bytes, { encoding: imageFormat }
+    bytes, { encoding }
   );
-  clog.log('uploadBlob response', JSON.stringify(response, null, 2))
+  console.log('upload OK')
+  console.log('response => ', response)
+  // clog.log('uploadBlob response', JSON.stringify(response, null, 2))
 
   if (!response.success) {
     const msg = `Unable to upload image ${imageUrl}`;
