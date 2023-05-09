@@ -11,9 +11,11 @@ type BotOptions = {
     maxRepliesInterval?: number;
     maxRepliesPerInterval?: number;
     useNonBotHandle?: boolean;
+    showPolling?: boolean;
 };
 export declare class BskyBot {
     _pollCount: number;
+    _showPolling: boolean;
     private static _ownerHandle?;
     static setOwner({ handle, contact }: {
         handle: string;
@@ -45,6 +47,7 @@ export declare class BskyBot {
     private _ensureLoggedIn;
     setHandler<K extends keyof HandlerMap>(type: K, handler: HandlerMap[K]): void;
     clearHandler<K extends keyof HandlerMap>(type: K): void;
+    private _tick;
     private _poll;
     startPolling(options?: {
         interval?: number;

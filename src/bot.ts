@@ -42,6 +42,7 @@ type BotOptions = {
   maxRepliesInterval?: number;
   maxRepliesPerInterval?: number;
   useNonBotHandle?: boolean;
+  showPolling?: boolean;
 };
 const BOT_DEFAULTS: Required<BotOptions> = {
   handle: "", // TODO do some type magic so this doesn't have to be here, since it's a required prop
@@ -51,6 +52,7 @@ const BOT_DEFAULTS: Required<BotOptions> = {
   maxRepliesInterval: DEFAULT_MAX_REPLIES_INTERVAL,
   maxRepliesPerInterval: DEFAULT_MAX_REPLIES_PER_INTERVAL,
   useNonBotHandle: false,
+  showPolling: false
 };
 
 // regex to test that a handle conains one of ".bot." or "-bot"
@@ -58,6 +60,7 @@ const botHandleRegex = /(\.bot\.|-bot)/i;
 
 export class BskyBot {
   _pollCount: number = 0;
+  _showPolling: boolean = false;
 
   // fetch handler with user-agent
   private static _ownerHandle?: string;
@@ -127,6 +130,7 @@ export class BskyBot {
     this._replyRecord = [];
     this._maxRepliesInterval = options.maxRepliesInterval ?? BOT_DEFAULTS.maxRepliesInterval;
     this._maxRepliesPerInterval = options.maxRepliesPerInterval ?? BOT_DEFAULTS.maxRepliesPerInterval;
+    this._showPolling = options.showPolling ?? BOT_DEFAULTS.showPolling;
 
     this._agent = new BskyAgent({
       service: options.service ?? "https://bsky.social",
@@ -222,15 +226,23 @@ export class BskyBot {
     delete this._handlers[type];
   }
 
-  private async _poll() {
-    this._ensureNotKilled();
-    if (this._polling) return;
-    this._polling = true;
+  private _tick() {
     this._pollCount++
     process.stdout.write(".");
     if (this._pollCount % 10 === 0) {
       process.stdout.write(`\n[${this._pollCount}]`);
     }
+  }
+
+  private async _poll() {
+    this._ensureNotKilled();
+    if (this._polling) return;
+    this._polling = true;
+
+    if (this._showPolling) {
+      this._tick();
+    }
+
     const listNotifications = rateLimit(this.agent.listNotifications, this._queryRateLimiter);
     try {
       const checkedNotificationsAt = new Date();
