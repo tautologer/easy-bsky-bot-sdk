@@ -34,10 +34,20 @@ export const makeEmbed = async (params: MakeEmbedParams) => {
   }
   clog.log('file exists', { imageUrl, imageFormat })
   const data = fs.readFileSync(imageUrl);
-  clog.log('read data', { length: data.length })
+  const buffer = await data.buffer
+  // const data = new Uint8Array(buffer);
+  // const buffer = await image.arrayBuffer();
+  let bytes = new Uint8Array(buffer);
+
+  clog.log('read data', {
+    length: bytes.length,
+    buffer: typeof buffer,
+    data: typeof data,
+    byes: typeof bytes,
+  })
 
   const response = await agent.uploadBlob(
-    data, { encoding: imageFormat }
+    bytes, { encoding: imageFormat }
   );
   clog.log('uploadBlob response', JSON.stringify(response, null, 2))
 
