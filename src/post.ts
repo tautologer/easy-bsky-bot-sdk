@@ -14,16 +14,19 @@ import {
   PostReference,
   Uri,
   UserIdentifier,
+  ImageEmbed
 } from "./types";
 import { getCallOptions } from "./util";
+import { makeEmbed } from "./embed";
+
 
 // util
 
 export const extractMentionsFromFacets = (
   facets:
     | {
-        features: Feature[];
-      }[]
+      features: Feature[];
+    }[]
     | undefined
 ): Did[] => {
   if (!facets) return [];
@@ -77,9 +80,9 @@ const mapBskyFeedPostToPost = (bskyFeedPost: AppBskyFeedDefs.PostView): Omit<Pos
 
   const replyDetails = record.reply
     ? {
-        parent: { uri: record.reply.parent.uri, cid: record.reply.parent.cid },
-        root: { uri: record.reply.root.uri, cid: record.reply.root.cid },
-      }
+      parent: { uri: record.reply.parent.uri, cid: record.reply.parent.cid },
+      root: { uri: record.reply.root.uri, cid: record.reply.root.cid },
+    }
     : {};
 
   // note that we have no way of knowing whether or not this is a repost --
@@ -185,6 +188,13 @@ export const getUserPosts = async ({
 
 export type PostParams = {
   text?: string;
+  embed?: ImageEmbed;
+
+  // ?? we could also bundle this in a struct?
+  imageUrl?: string; // TODO support buffer and URI types
+  imageAlt?: string;
+  encoding?: string;
+
   // TODO more options & types: images, external embeds, quotes, etc
 };
 export const validatePostParams = (params: PostParams): void => {
@@ -202,8 +212,26 @@ type InternalPostParams = BasePostParams & {
 };
 
 const _post = async (params: InternalPostParams): Promise<PostReference> => {
-  const { agent } = params;
+  const { agent, imageUrl, imageAlt, encoding } = params;
+  let { embed } = params;
   const _params: Partial<AppBskyFeedPost.Record> = {};
+
+  if (imageUrl) {
+    // TODO handle buffer and URI types
+    // check if embed also passed as we can only have one?
+    if (typeof imageUrl !== 'string') {
+      throw new Error(`invalid image: ${imageUrl} (type: ${typeof imageUrl}) only local paths are supported`);
+    }
+    if (embed) {
+      throw new Error(`cannot pass embed and imageUrl`);
+    }
+    embed = await makeEmbed({
+      agent,
+      imageUrl,
+      imageAlt,
+      encoding
+    })
+  }
 
   // TODO suport passing in custom facets and entities ?
   const richText = params.richText ?? new RichText({ text: params.text ?? "" });
@@ -229,7 +257,12 @@ const _post = async (params: InternalPostParams): Promise<PostReference> => {
     };
   }
 
-  const { uri, cid } = await agent.post({ text: richText.text, facets: richText.facets, ..._params }); // call options ?
+  const { uri, cid } = await agent.post({
+    text: richText.text,
+    facets: richText.facets,
+    embed,
+    ..._params
+  }); // call options ?
   if (!isUri(uri)) throw new Error(`unexpected uri: ${uri}`);
   if (!isCid(cid)) throw new Error(`unexpected cid: ${cid}`);
   return { uri, cid };

@@ -1,5 +1,5 @@
 import { BskyAgent } from "@atproto/api";
-import { Did, Feature, Post, PostReference, Uri, UserIdentifier } from "./types";
+import { Did, Feature, Post, PostReference, Uri, UserIdentifier, ImageEmbed } from "./types";
 export declare const extractMentionsFromFacets: (facets: {
     features: Feature[];
 }[] | undefined) => Did[];
@@ -28,6 +28,10 @@ export declare const getUserPosts: ({ agent, identifier, limit, cursor, }: {
 }>;
 export type PostParams = {
     text?: string;
+    embed?: ImageEmbed;
+    imageUrl?: string;
+    imageAlt?: string;
+    encoding?: string;
 };
 export declare const validatePostParams: (params: PostParams) => void;
 type BasePostParams = PostParams & {

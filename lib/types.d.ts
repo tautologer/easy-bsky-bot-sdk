@@ -38,6 +38,8 @@ export type Post = {
     parent?: PostReference;
     root?: PostReference;
 };
+import { PostParam } from './bot';
+export { PostParam };
 export declare const isPost: (x: any) => x is Post;
 export type ReplyPost = Post & {
     root: PostReference;
@@ -88,4 +90,17 @@ export type Fetcher<T, P extends FetchParams> = (params: P) => Promise<{
 export type Notif = Awaited<ReturnType<BskyAgent["listNotifications"]>>["data"]["notifications"][number];
 export type Assert<T extends true> = T;
 export type Equals<T, U> = [T] extends [U] ? ([U] extends [T] ? true : false) : false;
-export {};
+export type MakeEmbedParams = {
+    agent: BskyAgent;
+    imageUrl: string;
+    imageAlt?: string;
+    encoding?: string;
+};
+export type ImageItem = {
+    image: any;
+    alt: string;
+};
+export type ImageEmbed = {
+    $type: "app.bsky.embed.images";
+    images: ImageItem[];
+};

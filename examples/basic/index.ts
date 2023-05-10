@@ -1,8 +1,44 @@
 import * as dotenv from "dotenv";
-import { BskyBot, Events } from "easy-bsky-bot-sdk";
+import {
+  Events,
+  MakeEmbedParams
+} from '../../lib/types'
+
+import { BskyBot } from "../../lib/bot";
 
 // load environment variables from .env file
 dotenv.config();
+
+async function testImagePost(bot: BskyBot) {
+  // const imageUrl = './testdata/slice.png'
+  // const imageUrl = './testdata/test-cat.jpg'
+  const imageUrl = 'https://www.google.com/images/srpr/logo3w.png'
+
+  // const imageUrl = './testdata/test.png'
+
+  // const params: MakeEmbedParams = {
+  //   agent: bot.agent,
+  //   imageUrl: imageUrl
+  // }
+  // const embed = await bot.makeEmbed(params)
+
+  // try {
+  //   const result = await bot.post({
+  //     text: "here's an image",
+  //     embed,
+  //   });
+  //   console.log('posted image', result)
+  // } catch (err) {
+  //   console.error('error posting image', err)
+  // }
+
+  await bot.post({
+    text: "catz",
+    imageUrl,
+    imageAlt: 'test cat pic',
+  })
+
+}
 
 async function main() {
   const handle = process.env.BOT_HANDLE;
@@ -11,8 +47,8 @@ async function main() {
   if (!password) throw new Error("BOT_PASSWORD not set in .env");
 
   BskyBot.setOwner({
-    handle: "example.bsky.social",
-    contact: "example.contact@example.com",
+    handle,
+    contact: `support@${handle}`,
   });
 
   const bot = new BskyBot({
@@ -32,6 +68,13 @@ async function main() {
     const { post } = event;
     console.log(`got reply from ${post.author.handle}: ${post.text}`);
     await bot.like(post);
+
+    const { text } = post;
+
+    if (text === 'img') {
+      await testImagePost(bot)
+    }
+
   });
 
   bot.setHandler(Events.FOLLOW, async (event) => {
@@ -40,7 +83,10 @@ async function main() {
     await bot.follow(user.did);
   });
 
+
   bot.startPolling(); // start polling for events
+  await testImagePost(bot)
+
 }
 
 main().catch((err) => {

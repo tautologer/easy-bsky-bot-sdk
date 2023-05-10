@@ -24,10 +24,12 @@ import {
   validatePostParams,
 } from "./post";
 import { rateLimit, RateLimiter } from "./rateLimiter";
-import { Did, Handle, isDid, isHandle, Notif, Post, PostReference, Uri, User, UserIdentifier } from "./types";
+import { Did, Handle, isDid, isHandle, MakeEmbedParams, Notif, Post, PostReference, Uri, User, UserIdentifier } from "./types";
 import { getUser } from "./user";
+import { makeEmbed } from "./embed";
 
-type PostParam = string | PostParams;
+export type PostParam = string | PostParams;
+
 const getPostParams = (param: PostParam): PostParams => {
   if (typeof param === "string") return { text: param };
   validatePostParams(param);
@@ -42,21 +44,26 @@ type BotOptions = {
   maxRepliesInterval?: number;
   maxRepliesPerInterval?: number;
   useNonBotHandle?: boolean;
+  showPolling?: boolean;
 };
 const BOT_DEFAULTS: Required<BotOptions> = {
   handle: "", // TODO do some type magic so this doesn't have to be here, since it's a required prop
   service: "https://bsky.social",
   replyToBots: false,
-  replyToNonFollowers: false,
+  replyToNonFollowers: true, // risky?
   maxRepliesInterval: DEFAULT_MAX_REPLIES_INTERVAL,
   maxRepliesPerInterval: DEFAULT_MAX_REPLIES_PER_INTERVAL,
   useNonBotHandle: false,
+  showPolling: false
 };
 
 // regex to test that a handle conains one of ".bot." or "-bot"
 const botHandleRegex = /(\.bot\.|-bot)/i;
 
 export class BskyBot {
+  _pollCount: number = 0;
+  _showPolling: boolean = false;
+
   // fetch handler with user-agent
   private static _ownerHandle?: string;
   static setOwner({ handle, contact }: { handle: string; contact?: string }) {
@@ -125,6 +132,7 @@ export class BskyBot {
     this._replyRecord = [];
     this._maxRepliesInterval = options.maxRepliesInterval ?? BOT_DEFAULTS.maxRepliesInterval;
     this._maxRepliesPerInterval = options.maxRepliesPerInterval ?? BOT_DEFAULTS.maxRepliesPerInterval;
+    this._showPolling = options.showPolling ?? BOT_DEFAULTS.showPolling;
 
     this._agent = new BskyAgent({
       service: options.service ?? "https://bsky.social",
@@ -220,10 +228,23 @@ export class BskyBot {
     delete this._handlers[type];
   }
 
+  private _tick() {
+    this._pollCount++
+    process.stdout.write(".");
+    if (this._pollCount % 10 === 0) {
+      process.stdout.write(`\n[${this._pollCount}]`);
+    }
+  }
+
   private async _poll() {
     this._ensureNotKilled();
     if (this._polling) return;
     this._polling = true;
+
+    if (this._showPolling) {
+      this._tick();
+    }
+
     const listNotifications = rateLimit(this.agent.listNotifications, this._queryRateLimiter);
     try {
       const checkedNotificationsAt = new Date();
@@ -392,6 +413,10 @@ export class BskyBot {
       { agent: this.agent, actor: identifier, limit: options.limit },
       this._queryRateLimiter
     );
+  }
+
+  async makeEmbed(params: MakeEmbedParams) {
+    return makeEmbed(params)
   }
 
   // ooh, you know what would be really cool, is if we had "iterate over X" methods, like "iterate over all followers"

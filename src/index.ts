@@ -10,6 +10,7 @@ export {
   User,
   isUser,
   Post,
+  PostParam,
   isPost,
   isReplyPost,
   PostReference,
@@ -17,6 +18,9 @@ export {
   UserIdentifier,
   isUserIdentifier,
   Events,
+  MakeEmbedParams,
+  ImageItem,
+  ImageEmbed
 } from "./types";
 
 export { BskyBot } from "./bot";

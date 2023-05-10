@@ -1,0 +1,31 @@
+# useful tools and commands
+# install from https://github.com/casey/just
+# use `just` command on its own to see a summary
+
+
+set export
+set dotenv-load # load .env values to use in here
+set ignore-comments := true
+
+# list all recipes
+default:
+  @just --list
+
+# remove build artifacts
+clean:
+  rm -rf build/*
+
+cls:
+  clear && printf '\e[3J'
+
+
+dev: cls
+  cd ../.. && tsc
+  pwd
+  npm run dev
+
+build-pkg: cls
+  cd ../.. && tsc
+
+
+# --- deployment ----

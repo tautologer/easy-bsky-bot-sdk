@@ -1,8 +1,8 @@
 import { BskyAgent } from "@atproto/api";
 import { HandlerMap } from "./event";
 import { PostParams } from "./post";
-import { Did, Handle, Post, PostReference, Uri, User, UserIdentifier } from "./types";
-type PostParam = string | PostParams;
+import { Did, Handle, MakeEmbedParams, Post, PostReference, Uri, User, UserIdentifier } from "./types";
+export type PostParam = string | PostParams;
 type BotOptions = {
     handle: string;
     service?: string;
@@ -11,8 +11,11 @@ type BotOptions = {
     maxRepliesInterval?: number;
     maxRepliesPerInterval?: number;
     useNonBotHandle?: boolean;
+    showPolling?: boolean;
 };
 export declare class BskyBot {
+    _pollCount: number;
+    _showPolling: boolean;
     private static _ownerHandle?;
     static setOwner({ handle, contact }: {
         handle: string;
@@ -44,6 +47,7 @@ export declare class BskyBot {
     private _ensureLoggedIn;
     setHandler<K extends keyof HandlerMap>(type: K, handler: HandlerMap[K]): void;
     clearHandler<K extends keyof HandlerMap>(type: K): void;
+    private _tick;
     private _poll;
     startPolling(options?: {
         interval?: number;
@@ -71,5 +75,6 @@ export declare class BskyBot {
     getFollows(identifier: UserIdentifier, options?: {
         limit?: number;
     }): Promise<User[]>;
+    makeEmbed(params: MakeEmbedParams): Promise<import("./types").ImageEmbed>;
 }
 export {};
