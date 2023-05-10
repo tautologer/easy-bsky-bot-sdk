@@ -75,6 +75,6 @@ export declare class BskyBot {
     getFollows(identifier: UserIdentifier, options?: {
         limit?: number;
     }): Promise<User[]>;
-    makeEmbed(params: MakeEmbedParams): Promise<import("./types").ImageEmbed>;
+    makeEmbed(params: MakeEmbedParams): Promise<any>;
 }
 export {};

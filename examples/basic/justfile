@@ -24,5 +24,8 @@ dev: cls
   pwd
   npm run dev
 
+build-pkg: cls
+  cd ../.. && tsc
+
 
 # --- deployment ----
