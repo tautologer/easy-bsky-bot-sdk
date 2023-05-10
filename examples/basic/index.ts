@@ -32,7 +32,8 @@ async function testImagePost(bot: BskyBot) {
 
   await bot.post({
     text: "catz",
-    imageUrl
+    imageUrl,
+    imageAlt: 'test cat pic',
   })
 
 }
