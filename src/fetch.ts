@@ -55,9 +55,11 @@ export const setGlobalFetchHandler = (userAgent: string) => {
     return result;
   };
 
-  BskyAgent.configure({
-    fetch: fetchHandler,
-  });
+  // this is breaking uploadBlob
+
+  // BskyAgent.configure({
+  //   fetch: fetchHandler,
+  // });
 };
 
 // TODO consider a Paginator-type pattern instead of this, see comment below
