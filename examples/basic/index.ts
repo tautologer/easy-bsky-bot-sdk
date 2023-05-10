@@ -10,26 +10,30 @@ import { BskyBot } from "../../lib/bot";
 dotenv.config();
 
 async function testImagePost(bot: BskyBot) {
-  // const imagePath = './testdata/slice.png'
-  const imagePath = './testdata/test-cat.jpg'
-  // const imagePath = './testdata/test.png'
+  // const imageUrl = './testdata/slice.png'
+  const imageUrl = './testdata/test-cat.jpg'
+  // const imageUrl = './testdata/test.png'
 
-  const params: MakeEmbedParams = {
-    agent: bot.agent,
-    imageUrl: imagePath
-  }
-  const embed = await bot.makeEmbed(params)
+  // const params: MakeEmbedParams = {
+  //   agent: bot.agent,
+  //   imageUrl: imageUrl
+  // }
+  // const embed = await bot.makeEmbed(params)
 
-  try {
-    const result = await bot.post({
-      text: "here's an image",
-      embed,
-    });
-    console.log('posted image', result)
-  } catch (err) {
-    console.error('error posting image', err)
-  }
+  // try {
+  //   const result = await bot.post({
+  //     text: "here's an image",
+  //     embed,
+  //   });
+  //   console.log('posted image', result)
+  // } catch (err) {
+  //   console.error('error posting image', err)
+  // }
 
+  await bot.post({
+    text: "catz",
+    imageUrl
+  })
 
 }
 

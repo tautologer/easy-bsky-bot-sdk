@@ -29,6 +29,9 @@ export declare const getUserPosts: ({ agent, identifier, limit, cursor, }: {
 export declare type PostParams = {
     text?: string;
     embed?: ImageEmbed;
+    imageUrl?: string;
+    imageAlt?: string;
+    encoding?: string;
 };
 export declare const validatePostParams: (params: PostParams) => void;
 declare type BasePostParams = PostParams & {

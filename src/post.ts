@@ -17,6 +17,7 @@ import {
   ImageEmbed
 } from "./types";
 import { getCallOptions } from "./util";
+import { makeEmbed } from "./embed";
 
 
 // util
@@ -188,6 +189,12 @@ export const getUserPosts = async ({
 export type PostParams = {
   text?: string;
   embed?: ImageEmbed;
+
+  // ?? we could also bundle this in a struct?
+  imageUrl?: string; // TODO support buffer and URI types
+  imageAlt?: string;
+  encoding?: string;
+
   // TODO more options & types: images, external embeds, quotes, etc
 };
 export const validatePostParams = (params: PostParams): void => {
@@ -205,8 +212,26 @@ type InternalPostParams = BasePostParams & {
 };
 
 const _post = async (params: InternalPostParams): Promise<PostReference> => {
-  const { agent, embed } = params;
+  const { agent, imageUrl, imageAlt, encoding } = params;
+  let { embed } = params;
   const _params: Partial<AppBskyFeedPost.Record> = {};
+
+  if (imageUrl) {
+    // TODO handle buffer and URI types
+    // check if embed also passed as we can only have one?
+    if (typeof imageUrl !== 'string') {
+      throw new Error(`invalid image: ${imageUrl} (type: ${typeof imageUrl}) only local paths are supported`);
+    }
+    if (embed) {
+      throw new Error(`cannot pass embed and imageUrl`);
+    }
+    embed = await makeEmbed({
+      agent,
+      imageUrl,
+      imageAlt,
+      encoding
+    })
+  }
 
   // TODO suport passing in custom facets and entities ?
   const richText = params.richText ?? new RichText({ text: params.text ?? "" });

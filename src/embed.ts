@@ -16,7 +16,7 @@ const clog = {
   log: (...args: any[]) => {
     if (!verbose) return
     const msg = args.shift()
-    console.log(msg, JSON.stringify(args, null, 2))
+    console.log(msg, args && JSON.stringify(args, null, 2))
   }
 }
 
@@ -38,22 +38,18 @@ export const makeEmbed = async (params: MakeEmbedParams) => {
     throw new Error(msg);
     // return
   }
-  clog.log('file exists', { imageUrl, encoding })
+  clog.log('√ file exists', { imageUrl, encoding })
   const data = fs.readFileSync(imageUrl);
   let bytes = new Uint8Array(data);
 
-  clog.log('read data', {
-    length: bytes.length,
-    data: typeof data,
-    bytes: typeof bytes,
-  })
+  clog.log('√ read image data', { length: bytes.length })
 
   // try {
   const response = await agent.uploadBlob(
     data, { encoding: 'image/jpeg' }
   )
   if (response.success) {
-    console.log("OK blob uploaded ")
+    clog.log("OK blob uploaded")
   } else {
     console.error("ERROR failed to upload blob", response);
     return
@@ -61,7 +57,7 @@ export const makeEmbed = async (params: MakeEmbedParams) => {
 
   const { data: { blob: image } } = response;
 
-  const embed: any = {
+  const embed: ImageEmbed = {
     $type: "app.bsky.embed.images",
     images: [
       {
@@ -74,6 +70,3 @@ export const makeEmbed = async (params: MakeEmbedParams) => {
   return embed
 
 }
-
-
-
