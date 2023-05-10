@@ -55,6 +55,10 @@ export type Post = {
   parent?: PostReference;
   root?: PostReference;
 };
+
+import { PostParam } from './bot'
+export { PostParam }
+
 export const isPost = (x: any): x is Post =>
   typeof x === "object" &&
   x !== null &&

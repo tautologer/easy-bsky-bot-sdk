@@ -28,7 +28,8 @@ import { Did, Handle, isDid, isHandle, MakeEmbedParams, Notif, Post, PostReferen
 import { getUser } from "./user";
 import { makeEmbed } from "./embed";
 
-type PostParam = string | PostParams;
+export type PostParam = string | PostParams;
+
 const getPostParams = (param: PostParam): PostParams => {
   if (typeof param === "string") return { text: param };
   validatePostParams(param);

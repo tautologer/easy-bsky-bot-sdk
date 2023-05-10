@@ -4,4 +4,4 @@ import { ImageEmbed, MakeEmbedParams } from './types';
  * @param params
  * @returns
  */
-export declare const makeEmbed: (params: MakeEmbedParams) => Promise<ImageEmbed | undefined>;
+export declare const makeEmbed: (params: MakeEmbedParams) => Promise<ImageEmbed>;

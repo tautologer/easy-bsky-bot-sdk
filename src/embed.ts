@@ -1,16 +1,14 @@
 import fs from 'fs'
+import path from 'path'
 import { ImageEmbed, MakeEmbedParams } from './types';
+import { downloadImage, guessImageFormat, suffix } from './downloads';
 
-function guessImageFormat(imageUrl: string) {
-  const ext = imageUrl.split('.').pop()
-  if (ext === 'png') return 'image/png'
-  if (ext === 'jpg') return 'image/jpeg'
-  if (ext === 'jpeg') return 'image/jpeg'
-  if (ext === 'gif') return 'image/gif'
-  throw new Error(`Unable to guess encoding for ${imageUrl}`)
+let verbose = true
+
+// TODO
+const localConfig = {
+  defaultImageEncoding: 'image/png'
 }
-
-const verbose = true
 
 const clog = {
   log: (...args: any[]) => {
@@ -27,33 +25,41 @@ const clog = {
  */
 export const makeEmbed = async (params: MakeEmbedParams) => {
   let { agent, imageUrl, imageAlt, encoding } = params;
-  encoding = encoding || guessImageFormat(imageUrl)
-  imageAlt = imageAlt || 'image'
 
-  const check = fs.existsSync(imageUrl)
-  if (!check) {
-    const msg = `Unable to find image ${imageUrl}`;
+  let imagePath = imageUrl
+  encoding = encoding || guessImageFormat(imagePath) || localConfig.defaultImageEncoding
+
+  if (imagePath.startsWith('http')) {
+    imagePath = `./temp/downloads/${Date.now()}.${suffix(imagePath)}`
+    console.log('imagePath', imagePath)
+    await downloadImage(imageUrl, imagePath)
+  }
+
+  if (!fs.existsSync(imagePath)) {
+    const msg = `Unable to find image ${imagePath}`;
     console.error(msg);
     // FIXME dont crash in prod env if an image is missing
     throw new Error(msg);
     // return
   }
-  clog.log('√ file exists', { imageUrl, encoding })
-  const data = fs.readFileSync(imageUrl);
-  let bytes = new Uint8Array(data);
 
-  clog.log('√ read image data', { length: bytes.length })
+  imageAlt = imageAlt || 'image'
 
-  // try {
+  clog.log('√ image file exists', { imageUrl: imagePath, encoding })
+  const data = fs.readFileSync(imagePath);
+  // let bytes = new Uint8Array(data);
+  // clog.log('√ read image data', { length: bytes.length })
+
   const response = await agent.uploadBlob(
     data, { encoding: 'image/jpeg' }
   )
-  if (response.success) {
-    clog.log("OK blob uploaded")
-  } else {
-    console.error("ERROR failed to upload blob", response);
-    return
-  }
+
+  // if (response.success) {
+  //   clog.log("OK blob uploaded")
+  // } else {
+  //   console.error("ERROR failed to upload blob", response);
+  //   return
+  // }
 
   const { data: { blob: image } } = response;
 

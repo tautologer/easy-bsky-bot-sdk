@@ -11,7 +11,9 @@ dotenv.config();
 
 async function testImagePost(bot: BskyBot) {
   // const imageUrl = './testdata/slice.png'
-  const imageUrl = './testdata/test-cat.jpg'
+  // const imageUrl = './testdata/test-cat.jpg'
+  const imageUrl = 'https://www.google.com/images/srpr/logo3w.png'
+
   // const imageUrl = './testdata/test.png'
 
   // const params: MakeEmbedParams = {

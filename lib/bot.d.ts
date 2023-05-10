@@ -2,8 +2,8 @@ import { BskyAgent } from "@atproto/api";
 import { HandlerMap } from "./event";
 import { PostParams } from "./post";
 import { Did, Handle, MakeEmbedParams, Post, PostReference, Uri, User, UserIdentifier } from "./types";
-declare type PostParam = string | PostParams;
-declare type BotOptions = {
+export type PostParam = string | PostParams;
+type BotOptions = {
     handle: string;
     service?: string;
     replyToBots?: boolean;
@@ -75,6 +75,6 @@ export declare class BskyBot {
     getFollows(identifier: UserIdentifier, options?: {
         limit?: number;
     }): Promise<User[]>;
-    makeEmbed(params: MakeEmbedParams): Promise<import("./types").ImageEmbed | undefined>;
+    makeEmbed(params: MakeEmbedParams): Promise<import("./types").ImageEmbed>;
 }
 export {};

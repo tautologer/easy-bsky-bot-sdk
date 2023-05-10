@@ -10,6 +10,7 @@ export {
   User,
   isUser,
   Post,
+  PostParam,
   isPost,
   isReplyPost,
   PostReference,
