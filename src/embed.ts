@@ -44,22 +44,12 @@ export const makeEmbed = async (params: MakeEmbedParams) => {
   }
 
   imageAlt = imageAlt || 'image'
-
   clog.log('√ image file exists', { imageUrl: imagePath, encoding })
   const data = fs.readFileSync(imagePath);
-  // let bytes = new Uint8Array(data);
-  // clog.log('√ read image data', { length: bytes.length })
 
   const response = await agent.uploadBlob(
     data, { encoding: 'image/jpeg' }
   )
-
-  // if (response.success) {
-  //   clog.log("OK blob uploaded")
-  // } else {
-  //   console.error("ERROR failed to upload blob", response);
-  //   return
-  // }
 
   const { data: { blob: image } } = response;
 
